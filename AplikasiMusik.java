@@ -10,10 +10,12 @@ public class AplikasiMusik {
     private ArrayList<Playlist> daftarPlaylist = new ArrayList<>();
     private ArrayList<RiwayatPutar> daftarRiwayat = new ArrayList<>();
     private Pengguna penggunaAktif;
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    // Inisialisasi Data Awal
+    // =========================
+    // Inisialisasi Data
+    // =========================
     public void inisialisasiData() {
         Genre g1 = new Genre("G1", "Rock");
         Genre g2 = new Genre("G2", "Pop");
@@ -24,40 +26,36 @@ public class AplikasiMusik {
         daftarLagu.addAll(Arrays.asList(l1, l2));
 
         daftarAdmin.add(new Admin("A1", "Admin Utama", "admin", "admin123", this));
-        daftarPengguna.add(new Pengguna("U1", "Rafli", "user", "123", this));
-
-        System.out.println("\n=============================================");
-        System.out.println(" SISTEM MANAJEMEN PLAYLIST MUSIK (CONSOLE)");
-        System.out.println("=============================================");
-        System.out.println("Data awal berhasil diinisialisasi.\n");
+        daftarPengguna.add(new Pengguna("U1", "Rafi", "user1", "12345", this));
     }
 
+    // =========================
     // Jalankan Program
+    // =========================
     public void run() {
         while (true) {
-            tampilkanHeader("HALAMAN LOGIN");
-            System.out.print("Masukkan Username : ");
-            String u = scanner.nextLine();
-            System.out.print("Masukkan Password : ");
-            String p = scanner.nextLine();
+            System.out.println("\nLogin Aplikasi Musik");
+            System.out.print("Username : ");
+            String user = sc.nextLine();
+            System.out.print("Password : ");
+            String pass = sc.nextLine();
 
-            Pengguna login = login(u, p);
+            Pengguna login = login(user, pass);
+
             if (login != null) {
                 penggunaAktif = login;
-                tampilkanHeader("LOGIN BERHASIL");
-                System.out.println("Selamat datang, " + login.getNama() + "!");
-                jeda();
+                System.out.println("Login berhasil!");
                 if (login instanceof Admin) menuAdmin((Admin) login);
                 else menuPengguna(login);
             } else {
-                System.out.println("\n---------------------------------------------");
-                System.out.println("Login gagal! Username atau password salah!");
-                System.out.println("---------------------------------------------\n");
+                System.out.println("Username atau password salah. Coba lagi.\n");
             }
         }
     }
 
+    // =========================
     // Login
+    // =========================
     public Pengguna login(String username, String password) {
         for (Admin a : daftarAdmin)
             if (a.getUsername().equals(username) && a.getPassword().equals(password)) return a;
@@ -68,43 +66,45 @@ public class AplikasiMusik {
         return null;
     }
 
+    // =========================
     // Menu Admin
+    // =========================
     private void menuAdmin(Admin admin) {
         while (true) {
-            tampilkanHeader("MENU ADMIN");
-            System.out.println("[1] Kelola Lagu");
-            System.out.println("[2] Kelola Genre");
-            System.out.println("[3] Logout");
-            System.out.println("---------------------------------------------");
-            System.out.print("Pilih menu (1-3): ");
-            String pilih = scanner.nextLine();
+            System.out.println("\nMenu Aplikasi");
+            System.out.println("1. Kelola Data Lagu");
+            System.out.println("2. Kelola Data Genre");
+            System.out.println("3. Logout");
+            System.out.print("Pilih menu : ");
+            String pilih = sc.nextLine();
 
             switch (pilih) {
-                case "1": admin.kelolaDataLagu(scanner); break;
-                case "2": admin.kelolaDataGenre(scanner); break;
+                case "1": admin.kelolaDataLagu(sc); break;
+                case "2": admin.kelolaDataGenre(sc); break;
                 case "3": logout(); return;
                 default: System.out.println("Pilihan tidak valid!");
             }
         }
     }
 
+    // =========================
     // Menu Pengguna
+    // =========================
     private void menuPengguna(Pengguna pengguna) {
         while (true) {
-            tampilkanHeader("MENU PENGGUNA");
-            System.out.println("[1] Membuat Playlist");
-            System.out.println("[2] Menambah Lagu ke Playlist");
-            System.out.println("[3] Putar Lagu");
-            System.out.println("[4] Lihat Riwayat");
-            System.out.println("[5] Logout");
-            System.out.println("---------------------------------------------");
-            System.out.print("Pilih menu (1-5): ");
-            String pilih = scanner.nextLine();
+            System.out.println("\nMenu Aplikasi");
+            System.out.println("1. Membuat Playlist");
+            System.out.println("2. Menambahkan Lagu ke Playlist");
+            System.out.println("3. Memutar Lagu");
+            System.out.println("4. Lihat Riwayat Pemutaran Lagu");
+            System.out.println("5. Logout");
+            System.out.print("Pilih menu : ");
+            String pilih = sc.nextLine();
 
             switch (pilih) {
-                case "1": pengguna.membuatPlaylist(scanner); break;
-                case "2": pengguna.menambahLaguKePlaylist(scanner); break;
-                case "3": pengguna.putarLagu(scanner); break;
+                case "1": pengguna.membuatPlaylist(sc); break;
+                case "2": pengguna.menambahLaguKePlaylist(sc); break;
+                case "3": pengguna.putarLagu(sc); break;
                 case "4": pengguna.lihatRiwayatPutar(); break;
                 case "5": logout(); return;
                 default: System.out.println("Pilihan tidak valid!");
@@ -112,26 +112,19 @@ public class AplikasiMusik {
         }
     }
 
+    // =========================
+    // Logout
+    // =========================
     public void logout() {
-        tampilkanHeader("LOGOUT");
-        System.out.println("Logout berhasil. Sampai jumpa, " + penggunaAktif.getNama() + "!");
+        System.out.println("\nLogout berhasil. Sampai jumpa, " + penggunaAktif.getNama() + "!");
+        System.out.println("Terima kasih telah menggunakan Aplikasi Musik!");
+        System.out.println("Kembali ke halaman login...\n");
         penggunaAktif = null;
-        jeda();
     }
 
-    // Utility Tampilan
-    public void tampilkanHeader(String judul) {
-        System.out.println("\n=============================================");
-        System.out.println(" " + judul.toUpperCase());
-        System.out.println("=============================================");
-    }
-
-    public void jeda() {
-        System.out.print("\nTekan [Enter] untuk melanjutkan...");
-        scanner.nextLine();
-    }
-
-    // Fungsi Data
+    // =========================
+    // Fungsi Pendukung
+    // =========================
     public ArrayList<Lagu> getDaftarLagu() { return daftarLagu; }
     public ArrayList<Genre> getDaftarGenre() { return daftarGenre; }
     public ArrayList<Playlist> getDaftarPlaylist() { return daftarPlaylist; }
@@ -148,10 +141,11 @@ public class AplikasiMusik {
     }
 
     public void simpanRiwayat(Pengguna user, Lagu lagu) {
-        String id = "R" + (daftarRiwayat.size() + 1);
+        String id = "R" + (daftarRiwayat.size() + 1); 
         String waktu = LocalDateTime.now().format(dtf);
         RiwayatPutar r = new RiwayatPutar(id, waktu, lagu, user);
         daftarRiwayat.add(r);
         user.getDaftarRiwayat().add(r);
+        System.out.println("Riwayat pemutaran lagu telah dicatat.");
     }
 }
